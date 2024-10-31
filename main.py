@@ -3,6 +3,7 @@ import argparse
 from random import randrange, choice, uniform
 
 from utils import configure_parser
+from exceptions import MistakeLimitReachedError
 
 # TODO add a check for entering invalid data
 
@@ -104,7 +105,7 @@ def main():
             precision = args.precision
         )
         print(problem)
-        
+ 
         # TODO check -d -f
         correct_answer = eval(problem)
 
@@ -128,8 +129,8 @@ def main():
                     max_mistakes -= 1
                     print(f"Wrong. You have {max_mistakes} attempts left")
                 else:
-                    # TODO create special exception for this case, which also show the correct answer
-                    raise Exception
+                    correct_answer = round(correct_answer, args.precision)
+                    raise MistakeLimitReachedError(correct_answer)
 
 
 if __name__ == "__main__":

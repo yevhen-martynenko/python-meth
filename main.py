@@ -107,6 +107,7 @@ def main():
         print(problem)
  
         # TODO check -d -f
+        # ZeroDivisionError
         correct_answer = eval(problem)
 
         while True:
@@ -129,7 +130,7 @@ def main():
                     max_mistakes -= 1
                     print(f"Wrong. You have {max_mistakes} attempts left")
                 else:
-                    correct_answer = round(correct_answer, args.precision)
+                    correct_answer = round(co:rrect_answer, args.precision)
                     raise MistakeLimitReachedError(correct_answer)
 
 

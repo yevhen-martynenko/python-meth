@@ -78,14 +78,15 @@ def configure_parser():
    
     error_handling = parser.add_argument_group("Error handling arguments")
     error_handling.add_argument(
-        "-g", "--go-on-error",
+        "-e", "--exit-on-mistake",
         action="store_true",
-        help="Continue solving after an error, instead of exiting"
+        default=False,
+        help="Terminate the program on mistake, instead of continuing"
     )
     error_handling.add_argument(
-        "-e", "--max-errors",
+        "-m", "--max-mistakes",
         type=int,
-        help="Maximum number of errors before exiting (requires --go-on-error)"
+        help="Maximum number of mistakes before exiting (requires --exit-on-mistake)"
     )
 
     parser.add_argument(

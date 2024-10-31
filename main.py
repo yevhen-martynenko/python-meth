@@ -4,9 +4,11 @@ from random import randrange, choice, uniform
 
 from utils import configure_parser
 
+# TODO add a check for entering invalid data
+
 
 def create_problem(
-    range_: list[int, float], 
+    range_: list[int | float], 
     sign: str, 
     operations: int, 
     precision: int
@@ -15,7 +17,7 @@ def create_problem(
     Generate a math problem with the given range, sign, number of operations, and precision.
 
     Args:
-        range_      (list[int, float])  Start and end values of the number range.
+        range_      (list[int | float])  Start and end values of the number range.
         sign        (str)               Allowed mathematical operators as a string ("+-*/" or "+-" or "+", etc)
         operations  (int)               Number of operations to include in the problem.
         precision   (int)               Decimal precision for float numbers.
@@ -62,8 +64,12 @@ def check_answer(
         tuple[str, bool]: A tuple containing the result message and a boolean value of correctness.
     """
     
-    is_correct: bool = round(correct_answer, precision) == round(user_answer, precision)
-    result: str = ''
+    # TODO check if -d or -f is used
+
+    correct_answer: float = round(correct_answer, precision)
+    user_answer: float = round(user_answer, precision) 
+    is_correct: bool = correct_answer == user_answer
+    result: str
 
     if quiet:
         result = "Correct" if is_correct else f"Incorrect, the answer is: {correct_answer}"
@@ -83,9 +89,12 @@ def main():
     if args.decimal == True and isinstance(args.range_[0], int):
         for _ in range(len(args.range_)):
             args.range_[_] = float(args.range_[_])
+    
+    max_mistakes: int | None = args.max_mistakes
+    if args.exit_on_mistake and max_mistakes is None:
+        max_mistakes = 1
 
     print(args)
-    print(type(args.range_[0]))
 
     for i in range(args.problems):
         problem = create_problem(
@@ -95,18 +104,32 @@ def main():
             precision = args.precision
         )
         print(problem)
-        user_answer = float(input("Your answer: "))
+        
+        # TODO check -d -f
         correct_answer = eval(problem)
 
-        result_message, result = check_answer(
-            user_answer = user_answer, 
-            correct_answer = correct_answer, 
-            precision = args.precision, 
-            quiet = args.quiet, 
-            verbose = args.verbose
-        )
+        while True:
+            user_answer = float(input("Your answer: "))
         
-        print(result_message, result)
+            result_message, is_correct = check_answer(
+                user_answer = user_answer, 
+                correct_answer = correct_answer, 
+                precision = args.precision, 
+                quiet = args.quiet, 
+                verbose = args.verbose
+            )
+
+            if is_correct:
+                print(result_message)
+                break
+
+            if args.exit_on_mistake:
+                if max_mistakes > 1:
+                    max_mistakes -= 1
+                    print(f"Wrong. You have {max_mistakes} attempts left")
+                else:
+                    # TODO create special exception for this case, which also show the correct answer
+                    raise Exception
 
 
 if __name__ == "__main__":

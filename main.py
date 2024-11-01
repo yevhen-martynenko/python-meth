@@ -2,10 +2,8 @@ import math
 import argparse
 from random import randrange, choice, uniform
 
-from utils import configure_parser
+from utils import configure_parser, validate_all_inputs
 from exceptions import MistakeLimitReachedError
-
-# TODO add a check for entering invalid data
 
 
 def create_problem(
@@ -87,6 +85,8 @@ def main():
     parser = configure_parser()
     args = parser.parse_args()
 
+    validate_all_inputs(args)
+
     if args.decimal == True and isinstance(args.range_[0], int):
         for _ in range(len(args.range_)):
             args.range_[_] = float(args.range_[_])
@@ -130,7 +130,7 @@ def main():
                     max_mistakes -= 1
                     print(f"Wrong. You have {max_mistakes} attempts left")
                 else:
-                    correct_answer = round(co:rrect_answer, args.precision)
+                    correct_answer = round(correct_answer, args.precision)
                     raise MistakeLimitReachedError(correct_answer)
 
 

@@ -37,6 +37,10 @@ def create_problem(
     for _ in range(operations):
         operation: str = choice(sign)
         number: str = generate_number()
+
+        if float(number) == 0 and operation == "/":
+            operation = "+"
+
         problem += f"{operation} {number} "
 
     return problem
@@ -87,9 +91,9 @@ def main():
 
     validate_all_inputs(args)
 
-    if args.decimal == True and isinstance(args.range_[0], int):
+    if args.decimal == False and isinstance(args.range_[0], float):
         for _ in range(len(args.range_)):
-            args.range_[_] = float(args.range_[_])
+            args.range_[_] = int(args.range_[_])
     
     max_mistakes: int | None = args.max_mistakes
     if args.exit_on_mistake and max_mistakes is None:
@@ -107,7 +111,6 @@ def main():
         print(problem)
  
         # TODO check -d -f
-        # ZeroDivisionError
         correct_answer = eval(problem)
 
         while True:
